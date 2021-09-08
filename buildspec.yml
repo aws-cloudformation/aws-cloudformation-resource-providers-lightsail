@@ -12,8 +12,5 @@ phases:
       - pre-commit run --all-files
       - cd "$CODEBUILD_SRC_DIR/aws-lightsail-instance"
       - mvn clean verify --no-transfer-progress
-      - cd "$CODEBUILD_SRC_DIR/aws-lightsail-disk"
-      - mvn clean verify --no-transfer-progress
     finally:
       - cat "$CODEBUILD_SRC_DIR/aws-lightsail-instance/rpdk.log"
-      - cat "$CODEBUILD_SRC_DIR/aws-lightsail-disk/rpdk.log"
