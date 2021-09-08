@@ -1,0 +1,23 @@
+{
+    "InstanceName": "CanaryTestingInstanceCFN",
+    "BlueprintId": "wordpress_5_1_1_2",
+    "BundleId": "{{TestRegionBundle}}",
+    "AddOns": [
+        {
+            "AddOnType": "AutoSnapshot",
+            "Status": "Disabled"
+        }
+    ],
+    "Networking": {
+        "Ports": [
+            {
+                "FromPort": 22,
+                "ToPort": 24,
+                "Protocol": "tcp",
+                "Cidrs": [
+                    "192.0.2.44/32"
+                ]
+            }
+        ]
+    }
+}
