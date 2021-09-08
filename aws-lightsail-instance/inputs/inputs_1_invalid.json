@@ -1,0 +1,9 @@
+{
+    "InstanceName": "CanaryTestingInstanceCFNInvalid",
+    "AddOns": [
+        {
+            "AddOnType": "AutoSnapshot",
+            "Status": "Enabled"
+        }
+    ]
+}
