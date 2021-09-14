@@ -15,7 +15,7 @@ import java.util.Map;
 public class CallbackContext extends StdCallbackContext {
 
     public static final Constant BACKOFF_DELAY = Constant.of().delay(Duration.ofSeconds(20))
-            .timeout(Duration.ofMinutes(20)).build();
+            .timeout(Duration.ofMinutes(25)).build();
 
     public static String PRE_CHECK_DELETE = "preCheckDelete";
     public static String PRE_CHECK_CREATE = "preCheckCreate";
@@ -30,7 +30,7 @@ public class CallbackContext extends StdCallbackContext {
 
     private Map<String, Integer> waitCount = new HashMap<>();
 
-    private Integer maxWaitCount = 45;
+    private Integer maxWaitCount = 60;
 
     public int getWaitCount(final String key) {
         return this.waitCount.getOrDefault(key, 0);

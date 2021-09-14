@@ -25,7 +25,7 @@ public class Networking implements ResourceHelper {
     /**
      * Update Instance port. Instance port will be update only if the ports are provided. To remove the port access that
      * is currently public then the port has to be provided with the private. We do this to prevent default ports access
-     * to go away accidentall in case of update.
+     * to go away accidental in case of update.
      *
      * @param awsRequest
      *

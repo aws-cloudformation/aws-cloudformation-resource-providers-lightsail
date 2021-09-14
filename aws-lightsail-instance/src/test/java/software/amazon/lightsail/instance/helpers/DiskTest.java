@@ -110,7 +110,7 @@ class DiskTest {
     @Test
     public void attachTest() {
                 val basicResponse = GetInstanceResponse.builder()
-                .instance(software.amazon.awssdk.services.lightsail.model.Instance.builder().state(InstanceState
+                .instance(Instance.builder().state(InstanceState
                         .builder()
                         .name("Running")
                         .build())
@@ -252,7 +252,7 @@ class DiskTest {
     @Test
     public void testDetach() {
         val basicResponse = GetInstanceResponse.builder()
-                .instance(software.amazon.awssdk.services.lightsail.model.Instance.builder().state(InstanceState
+                .instance(Instance.builder().state(InstanceState
                         .builder()
                         .name("Running")
                         .build())
@@ -297,7 +297,7 @@ class DiskTest {
                         .build()).build();
 
                 val detachDone = GetInstanceResponse.builder()
-                .instance(software.amazon.awssdk.services.lightsail.model.Instance.builder().state(InstanceState
+                .instance(Instance.builder().state(InstanceState
                         .builder()
                         .name("Running")
                         .build())
@@ -330,7 +330,7 @@ class DiskTest {
                         .build()).build();
 
         val detachDoneOne = GetInstanceResponse.builder()
-                .instance(software.amazon.awssdk.services.lightsail.model.Instance.builder().state(InstanceState
+                .instance(Instance.builder().state(InstanceState
                         .builder()
                         .name("Running")
                         .build())

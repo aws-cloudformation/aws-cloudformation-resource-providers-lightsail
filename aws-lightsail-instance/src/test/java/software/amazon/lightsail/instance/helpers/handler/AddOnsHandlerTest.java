@@ -57,6 +57,8 @@ class AddOnsHandlerTest {
                 .networking(Networking.builder()
                         .ports(ImmutableSet.of(
                                 Port.builder()
+                                        // Test values are random, they are not right values for the port.
+                                        // We are not doing port validations, we let Lightsail APIs to do the validaiton.
                                         .ipv6Cidrs(ImmutableList.of("2.2.24.2.3.2323.232323:/dsds"))
                                         .accessFrom("1")
                                         .cidrs(ImmutableList.of("1.2.2.232"))
