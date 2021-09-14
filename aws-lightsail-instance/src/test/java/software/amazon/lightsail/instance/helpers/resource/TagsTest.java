@@ -41,7 +41,7 @@ import static software.amazon.lightsail.instance.AbstractTestBase.MOCK_CREDENTIA
 
 class TagsTest {
 
-    private software.amazon.lightsail.instance.helpers.resource.Tags tagsTest;
+    private Tags tagsTest;
 
     @Mock
     private AmazonWebServicesClientProxy proxy;
@@ -86,7 +86,7 @@ class TagsTest {
                 ResourceHandlerRequest.<ResourceModel>builder()
                         .desiredResourceState(model)
                         .build();
-        tagsTest = new software.amazon.lightsail.instance.helpers.resource.Tags(model, logger,
+        tagsTest = new Tags(model, logger,
                 proxyClient, resourceModelRequest);
     }
 

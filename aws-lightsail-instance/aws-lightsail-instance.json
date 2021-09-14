@@ -409,8 +409,8 @@
                 "lightsail:StopInstance",
                 "lightsail:GetDisk",
                 "lightsail:GetRegions",
-                "lightsail:tagResource",
-                "lightsail:untagResource"
+                "lightsail:TagResource",
+                "lightsail:UntagResource"
             ]
         },
         "read": {
@@ -444,8 +444,8 @@
                 "lightsail:StartInstance",
                 "lightsail:StopInstance",
                 "lightsail:GetDisk",
-                "lightsail:tagResource",
-                "lightsail:untagResource"
+                "lightsail:TagResource",
+                "lightsail:UntagResource"
             ],
             "timeoutInMinutes": 2160
         }

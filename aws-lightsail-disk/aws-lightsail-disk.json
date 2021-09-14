@@ -146,15 +146,15 @@
             "description": "Iops of the Lightsail disk",
             "type": "integer"
         },
-        "isAttached": {
+        "IsAttached": {
             "description": "Check is Disk is attached state",
             "type": "boolean"
         },
-        "path": {
+        "Path": {
             "description": "Path of the  attached Disk",
             "type": "string"
         },
-        "attachedTo": {
+        "AttachedTo": {
             "description": "Name of the attached Lightsail Instance",
             "type": "string"
         }
@@ -165,9 +165,9 @@
         "SizeInGb"
     ],
     "readOnlyProperties": [
-        "/properties/attachedTo",
-        "/properties/path",
-        "/properties/isAttached",
+        "/properties/AttachedTo",
+        "/properties/Path",
+        "/properties/IsAttached",
         "/properties/Iops",
         "/properties/AttachmentState",
         "/properties/State",
