@@ -36,8 +36,8 @@ Resources:
                 - "lightsail:PutInstancePublicPorts"
                 - "lightsail:StartInstance"
                 - "lightsail:StopInstance"
-                - "lightsail:tagResource"
-                - "lightsail:untagResource"
+                - "lightsail:TagResource"
+                - "lightsail:UntagResource"
                 Resource: "*"
 Outputs:
   ExecutionRoleArn:

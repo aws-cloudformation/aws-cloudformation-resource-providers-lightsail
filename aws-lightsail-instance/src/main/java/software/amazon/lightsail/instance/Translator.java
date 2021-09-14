@@ -251,9 +251,9 @@ public class Translator {
     }
 
     /**
-     * PutInstancePublicPorts API will always set accessType to public right ? in the other term, If customer asked to
-     * close some ports instead if calling close instance public port I call with PutInstancePublicPorts leaving out
-     * closing accessType private ones should be enough
+     * PutInstancePublicPorts API will always set accessType to public. in the other term, If customer asked to
+     * close some ports instead if calling close instance public port then we will call with
+     * PutInstancePublicPorts leaving out closing accessType private ones should be enough
      *
      * @param resourceModel
      *
