@@ -1,0 +1,21 @@
+{
+    "RelationalDatabaseName": "ContractTestDatabaseCFN",
+    "RelationalDatabaseBlueprintId": "mysql_8_0",
+    "RelationalDatabaseBundleId": "micro_1_0",
+    "MasterUsername": "TestUser",
+    "MasterDatabaseName": "TestDb",
+    "PubliclyAccessible": true,
+    "RelationalDatabaseParameters": [
+        {
+            "ParameterName": "activate_all_roles_on_login",
+            "ParameterValue": "1",
+            "ApplyMethod": "immediate"
+        }
+    ],
+    "Tags": [
+        {
+            "Key": "key",
+            "Value": "value"
+        }
+    ]
+}
