@@ -21,4 +21,3 @@ Resources:
       Handler: software.amazon.lightsail.loadbalancer.HandlerWrapper::testEntrypoint
       Runtime: java8
       CodeUri: ./target/aws-lightsail-loadbalancer-handler-1.0-SNAPSHOT.jar
-

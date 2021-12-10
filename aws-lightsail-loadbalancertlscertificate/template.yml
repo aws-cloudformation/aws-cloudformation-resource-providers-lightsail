@@ -21,4 +21,3 @@ Resources:
       Handler: software.amazon.lightsail.loadbalancertlscertificate.HandlerWrapper::testEntrypoint
       Runtime: java8
       CodeUri: ./target/aws-lightsail-loadbalancertlscertificate-handler-1.0-SNAPSHOT.jar
-
