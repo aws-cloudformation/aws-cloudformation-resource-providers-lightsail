@@ -1,0 +1,9 @@
+{
+    "BucketName": "canary-testing-bucket-cfn",
+    "BundleId": "small_1_0",
+    "ObjectVersioning": true,
+    "AccessRules": {
+        "GetObject": "private",
+        "AllowPublicOverrides": true
+    }
+}
