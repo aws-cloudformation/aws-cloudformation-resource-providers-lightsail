@@ -1,0 +1,44 @@
+{
+    "ServiceName": "contract-test-container-cfn",
+    "Power": "small",
+    "Scale": 2,
+    "ContainerServiceDeployment": {
+        "Containers": [
+            {
+                "ContainerName": "nginx",
+                "Environment": [
+                    {
+                        "Variable": "variable",
+                        "Value": "value"
+                    }
+                ],
+                "Command": [],
+                "Image": "nginx:latest",
+                "Ports": [
+                    {
+                        "Port": "80",
+                        "Protocol": "HTTP"
+                    }
+                ]
+            }
+        ],
+        "PublicEndpoint": {
+            "ContainerName": "nginx",
+            "ContainerPort": 80,
+            "HealthCheckConfig": {
+                "HealthyThreshold": 3,
+                "IntervalSeconds": 10,
+                "Path": "/test",
+                "SuccessCodes": "200-499",
+                "TimeoutSeconds": 5,
+                "UnhealthyThreshold": 2
+            }
+        }
+    },
+    "Tags": [
+        {
+            "Key": "key",
+            "Value": "value"
+        }
+    ]
+}

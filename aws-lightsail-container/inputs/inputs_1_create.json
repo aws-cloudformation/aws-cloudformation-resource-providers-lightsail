@@ -1,0 +1,5 @@
+{
+    "ServiceName": "contract-test-container-cfn",
+    "Power": "nano",
+    "Scale": 1
+}
