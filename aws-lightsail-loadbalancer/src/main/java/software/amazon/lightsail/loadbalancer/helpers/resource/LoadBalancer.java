@@ -78,6 +78,18 @@ public class LoadBalancer implements ResourceHelper {
             }
         }
 
+
+        // Updating the TlsPolicyName attribute.
+        if (desiredResourceModel.getTlsPolicyName() != null) {
+            if (!desiredResourceModel.getTlsPolicyName().equals(currentResourceModel.getTlsPolicyName())) {
+                logger.log("Updating LoadBalancer attribute: TlsPolicyName");
+                proxyClient.injectCredentialsAndInvokeV2(UpdateLoadBalancerAttributeRequest.builder()
+                        .loadBalancerName(desiredResourceModel.getLoadBalancerName()).attributeName("TlsPolicyName")
+                        .attributeValue(desiredResourceModel.getTlsPolicyName())
+                        .build(), proxyClient.client()::updateLoadBalancerAttribute);
+            }
+        }
+
         return awsResponse;
     }
 

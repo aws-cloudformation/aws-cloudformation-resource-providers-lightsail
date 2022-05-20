@@ -48,6 +48,11 @@ public class LoadBalancerTlsCertificateHandler extends ResourceHandler {
     @Override
     protected ProgressEvent<ResourceModel, CallbackContext> update(
             final ProgressEvent<ResourceModel, CallbackContext> progress) {
+        return attachCertificate(progress).then(this::modifyHttpsRedirectionAttribute);
+    }
+
+    protected ProgressEvent<ResourceModel, CallbackContext> attachCertificate(
+            final ProgressEvent<ResourceModel, CallbackContext> progress) {
         val loadBalancerTlsCertificate = getLoadBalancerTlsCertificate(resourceModelRequest, proxyClient, logger);
         logger.log("Executing AWS-Lightsail-LoadBalancerTlsCertificate::Update::AttachCertificate...");
         return proxy
@@ -55,6 +60,20 @@ public class LoadBalancerTlsCertificateHandler extends ResourceHandler {
                         progress.getCallbackContext())
                 .translateToServiceRequest(Translator::translateToReadRequest)
                 .makeServiceCall((awsRequest, client) -> loadBalancerTlsCertificate.attachToLoadBalancer())
+                .handleError((awsRequest, exception, client, model, context) -> handleError(exception, model,
+                        callbackContext, ImmutableList.of(), logger, this.getClass().getSimpleName()))
+                .progress();
+    }
+
+    protected ProgressEvent<ResourceModel, CallbackContext> modifyHttpsRedirectionAttribute(
+            final ProgressEvent<ResourceModel, CallbackContext> progress) {
+        val loadBalancerTlsCertificate = getLoadBalancerTlsCertificate(resourceModelRequest, proxyClient, logger);
+        logger.log("Executing AWS-Lightsail-LoadBalancerTlsCertificate::Update::ModifyHttpsRedirectionAttribute...");
+        return proxy
+                .initiate("AWS-Lightsail-LoadBalancerTlsCertificate::Update::ModifyHttpsRedirectionAttribute", proxyClient, progress.getResourceModel(),
+                        progress.getCallbackContext())
+                .translateToServiceRequest(Translator::translateToReadRequest)
+                .makeServiceCall((awsRequest, client) -> loadBalancerTlsCertificate.modifyHttpsRedirection())
                 .handleError((awsRequest, exception, client, model, context) -> handleError(exception, model,
                         callbackContext, ImmutableList.of(), logger, this.getClass().getSimpleName()))
                 .progress();

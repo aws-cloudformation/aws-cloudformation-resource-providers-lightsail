@@ -4,6 +4,7 @@ import lombok.val;
 import software.amazon.awssdk.awscore.AwsRequest;
 import software.amazon.awssdk.awscore.AwsResponse;
 import software.amazon.awssdk.services.lightsail.model.*;
+import software.amazon.lightsail.loadbalancertlscertificate.helpers.GetModifiedLbTlsCertResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,15 +43,17 @@ public class Translator {
    * @param awsResponse the aws service describe resource response
    * @return model resource model
    */
-  public static ResourceModel translateFromReadResponse(final AwsResponse awsResponse, final ResourceModel model) {
-    val getLoadBalancerTlsCertificatesResponse = (GetLoadBalancerTlsCertificatesResponse) awsResponse;
-    if (getLoadBalancerTlsCertificatesResponse == null) {
+  public static ResourceModel translateFromReadResponse(final GetModifiedLbTlsCertResponse awsResponse, final ResourceModel model) {
+    if (awsResponse == null) {
       return ResourceModel.builder().build();
     }
+    val getLoadBalancerTlsCertificatesResponse = awsResponse.getLbTlsCertResponse();
     val certificate = getLoadBalancerTlsCertificatesResponse.tlsCertificates().stream()
             .filter(loadBalancerTlsCertificate -> loadBalancerTlsCertificate.name().equals(model.getCertificateName()))
             .collect(Collectors.toList()).get(0);
-    return translateSDKLoadBalancerTlsCertificateToResourceModel(certificate);
+    ResourceModel resModel = translateSDKLoadBalancerTlsCertificateToResourceModel(certificate);
+    resModel.setHttpsRedirectionEnabled(awsResponse.isHttpsRedirectionEnabled());
+    return resModel;
   }
 
   private static ResourceModel translateSDKLoadBalancerTlsCertificateToResourceModel(final LoadBalancerTlsCertificate certificate) {
