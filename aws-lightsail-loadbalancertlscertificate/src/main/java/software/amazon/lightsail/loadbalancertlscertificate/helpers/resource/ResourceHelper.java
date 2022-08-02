@@ -2,6 +2,7 @@ package software.amazon.lightsail.loadbalancertlscertificate.helpers.resource;
 
 import software.amazon.awssdk.awscore.AwsRequest;
 import software.amazon.awssdk.awscore.AwsResponse;
+import software.amazon.lightsail.loadbalancertlscertificate.helpers.GetModifiedLbTlsCertResponse;
 
 public interface ResourceHelper {
     AwsResponse update(AwsRequest request);
@@ -10,7 +11,7 @@ public interface ResourceHelper {
 
     AwsResponse delete(AwsRequest request);
 
-    AwsResponse read(AwsRequest request);
+    GetModifiedLbTlsCertResponse read(AwsRequest request);
 
     boolean isStabilizedUpdate();
 

@@ -26,7 +26,7 @@ public class Translator {
    */
   public static AwsRequest translateToCreateRequest(final ResourceModel model) {
     return CreateLoadBalancerRequest.builder().loadBalancerName(model.getLoadBalancerName()).instancePort(model.getInstancePort())
-            .ipAddressType(model.getIpAddressType()).tags(translateTagsToSdk(model.getTags())).build();
+            .ipAddressType(model.getIpAddressType()).tlsPolicyName(model.getTlsPolicyName()).tags(translateTagsToSdk(model.getTags())).build();
   }
 
   /**
@@ -58,6 +58,7 @@ public class Translator {
             .ipAddressType(loadBalancer.ipAddressTypeAsString()).loadBalancerArn(loadBalancer.arn())
             .sessionStickinessEnabled(Boolean.valueOf(loadBalancer.configurationOptions().get(LoadBalancerAttributeName.SESSION_STICKINESS_ENABLED)))
             .sessionStickinessLBCookieDurationSeconds(loadBalancer.configurationOptions().get(LoadBalancerAttributeName.SESSION_STICKINESS_LB_COOKIE_DURATION_SECONDS))
+            .tlsPolicyName(loadBalancer.tlsPolicyName())
             .attachedInstances(loadBalancer.instanceHealthSummary().stream().map(instanceHealthSummary -> instanceHealthSummary.instanceName())
               .collect(Collectors.toSet())).build();
   }

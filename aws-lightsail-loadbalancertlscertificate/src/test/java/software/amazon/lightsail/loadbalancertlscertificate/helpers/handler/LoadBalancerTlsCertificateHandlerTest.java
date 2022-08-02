@@ -14,6 +14,7 @@ import software.amazon.cloudformation.exceptions.CfnAlreadyExistsException;
 import software.amazon.cloudformation.proxy.OperationStatus;
 import software.amazon.cloudformation.proxy.*;
 import software.amazon.lightsail.loadbalancertlscertificate.*;
+import software.amazon.lightsail.loadbalancertlscertificate.helpers.GetModifiedLbTlsCertResponse;
 import software.amazon.lightsail.loadbalancertlscertificate.helpers.resource.LoadBalancerTlsCertificate;
 
 import java.time.Duration;
@@ -72,8 +73,9 @@ public class LoadBalancerTlsCertificateHandlerTest {
                 .when(testLoadBalancerTlsCertificateHandler).getLoadBalancerTlsCertificate(any(), any(), any());
 
         when(loadBalancerTlsCertificate.read(any()))
-                .thenReturn(GetLoadBalancerTlsCertificatesResponse.builder()
-                        .tlsCertificates(software.amazon.awssdk.services.lightsail.model.LoadBalancerTlsCertificate.builder().name("testCert").build()).build());
+                .thenReturn(new GetModifiedLbTlsCertResponse(GetLoadBalancerTlsCertificatesResponse.builder()
+                        .tlsCertificates(software.amazon.awssdk.services.lightsail.model.LoadBalancerTlsCertificate.builder()
+                                .name("testCert").build()).build(), false));
 
         try {
             testLoadBalancerTlsCertificateHandler.preCreate(ProgressEvent.progress(model, callbackContext));
@@ -320,7 +322,7 @@ public class LoadBalancerTlsCertificateHandlerTest {
                 .when(testLoadBalancerTlsCertificateHandler).getLoadBalancerTlsCertificate(any(), any(), any());
 
         when(loadBalancerTlsCertificate.read(any()))
-                .thenReturn(GetLoadBalancerTlsCertificatesResponse.builder().build());
+                .thenReturn(new GetModifiedLbTlsCertResponse(GetLoadBalancerTlsCertificatesResponse.builder().build(), false));
 
         final ProgressEvent<ResourceModel, CallbackContext> response = testLoadBalancerTlsCertificateHandler.preUpdate(ProgressEvent.progress(model, callbackContext));
 
@@ -383,9 +385,13 @@ public class LoadBalancerTlsCertificateHandlerTest {
         when(loadBalancerTlsCertificate.attachToLoadBalancer())
                 .thenReturn(null);
 
+        when(loadBalancerTlsCertificate.modifyHttpsRedirection())
+                .thenReturn(null);
+
         final ProgressEvent<ResourceModel, CallbackContext> response = testLoadBalancerTlsCertificateHandler.update(ProgressEvent.progress(model, callbackContext));
 
         verify(loadBalancerTlsCertificate, times(1)).attachToLoadBalancer();
+        verify(loadBalancerTlsCertificate, times(1)).modifyHttpsRedirection();
         assertThat(response).isNotNull();
         assertThat(response.getStatus()).isEqualTo(OperationStatus.IN_PROGRESS);
         assertThat(response.getCallbackDelaySeconds()).isEqualTo(0);
@@ -411,7 +417,7 @@ public class LoadBalancerTlsCertificateHandlerTest {
                 .when(testLoadBalancerTlsCertificateHandler).getLoadBalancerTlsCertificate(any(), any(), any());
 
         when(loadBalancerTlsCertificate.read(any()))
-                .thenReturn(GetLoadBalancerResponse.builder().build());
+                .thenReturn(new GetModifiedLbTlsCertResponse(GetLoadBalancerTlsCertificatesResponse.builder().build(), false));
 
         final ProgressEvent<ResourceModel, CallbackContext> response = testLoadBalancerTlsCertificateHandler.preDelete(ProgressEvent.progress(model, callbackContext));
 
