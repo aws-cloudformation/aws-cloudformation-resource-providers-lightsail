@@ -49,6 +49,7 @@ public class LoadBalancerTest {
         final ResourceModel model = ResourceModel.builder()
                 .attachedInstances(new HashSet<>(Arrays.asList("instance1"))).healthCheckPath("/old")
                 .sessionStickinessEnabled(true).sessionStickinessLBCookieDurationSeconds("1000")
+                .tlsPolicyName("policy1")
                 .build();
         ResourceHandlerRequest<ResourceModel> resourceModelRequest =
                 ResourceHandlerRequest.<ResourceModel>builder()
@@ -89,6 +90,7 @@ public class LoadBalancerTest {
                 .thenReturn(GetLoadBalancerResponse.builder()
                         .loadBalancer(software.amazon.awssdk.services.lightsail.model.LoadBalancer.builder()
                                 .healthCheckPath("/old").configurationOptions(configOptions)
+                                .tlsPolicyName("policy1")
                                 .build()).build());
         val result = testLoadBalancer.updateAttributes(GetLoadBalancerRequest.builder().build());
         verify(sdkClient, times(1)).getLoadBalancer(any(GetLoadBalancerRequest.class));
@@ -104,10 +106,11 @@ public class LoadBalancerTest {
                 .thenReturn(GetLoadBalancerResponse.builder()
                         .loadBalancer(software.amazon.awssdk.services.lightsail.model.LoadBalancer.builder()
                                 .healthCheckPath("/new").configurationOptions(configOptions)
+                                .tlsPolicyName("policy2")
                                 .build()).build());
         val result = testLoadBalancer.updateAttributes(GetLoadBalancerRequest.builder().build());
         verify(sdkClient, times(1)).getLoadBalancer(any(GetLoadBalancerRequest.class));
-        verify(sdkClient, times(3)).updateLoadBalancerAttribute(any(UpdateLoadBalancerAttributeRequest.class));
+        verify(sdkClient, times(4)).updateLoadBalancerAttribute(any(UpdateLoadBalancerAttributeRequest.class));
     }
 
     @Test
