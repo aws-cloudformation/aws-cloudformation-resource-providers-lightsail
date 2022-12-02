@@ -3,8 +3,10 @@ package software.amazon.lightsail.distribution.helpers.handler;
 import com.google.common.collect.ImmutableList;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
+import software.amazon.awssdk.awscore.exception.AwsErrorDetails;
 import software.amazon.awssdk.services.lightsail.LightsailClient;
 import software.amazon.awssdk.services.lightsail.model.GetDistributionsRequest;
+import software.amazon.awssdk.services.lightsail.model.GetDistributionsResponse;
 import software.amazon.awssdk.services.lightsail.model.ResourceType;
 import software.amazon.cloudformation.exceptions.CfnAlreadyExistsException;
 import software.amazon.cloudformation.proxy.*;
@@ -67,7 +69,12 @@ public class DistributionHandler extends ResourceHandler {
                 .initiate("AWS-Lightsail-Distribution::Create::PreExistenceCheck", proxyClient, progress.getResourceModel(),
                         progress.getCallbackContext())
                 .translateToServiceRequest(Translator::translateToReadRequest).makeServiceCall((awsRequest, client) -> {
-                    distribution.read(awsRequest);
+                    val getDistributionsResponse = (GetDistributionsResponse) distribution.read(awsRequest);
+                    if (getDistributionsResponse.distributions().isEmpty()) {
+                        return software.amazon.awssdk.services.lightsail.model.NotFoundException.builder()
+                                .awsErrorDetails(AwsErrorDetails.builder().errorCode("NotFoundException").build()).
+                                        build();
+                    }
                     logger.log(String.format("%s has successfully been read.", ResourceModel.TYPE_NAME));
                     throw new CfnAlreadyExistsException(ResourceType.DISTRIBUTION.toString(),
                             ((GetDistributionsRequest) awsRequest).distributionName());

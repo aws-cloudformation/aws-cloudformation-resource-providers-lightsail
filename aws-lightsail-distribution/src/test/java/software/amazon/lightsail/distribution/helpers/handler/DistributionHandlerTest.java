@@ -72,7 +72,9 @@ public class DistributionHandlerTest {
                 .when(testDistributionHandler).getDistribution(any(), any(), any());
 
         when(distribution.read(any()))
-                .thenReturn(GetDistributionsResponse.builder().build());
+                .thenReturn(GetDistributionsResponse.builder()
+                        .distributions(LightsailDistribution.builder().name("testDistribution").build())
+                        .build());
 
         try {
             testDistributionHandler.preCreate(ProgressEvent.progress(model, callbackContext));
@@ -105,6 +107,36 @@ public class DistributionHandlerTest {
                                 .builder().errorCode("InvalidInputException")
                                 .errorMessage("Requested resource not found")
                                 .build()).build());
+
+        final ProgressEvent<ResourceModel, CallbackContext> response = testDistributionHandler.preCreate(ProgressEvent.progress(model, callbackContext));
+
+        verify(distribution, times(1)).read(any());
+        assertThat(response).isNotNull();
+        assertThat(response.getStatus()).isEqualTo(OperationStatus.IN_PROGRESS);
+        assertThat(response.getCallbackDelaySeconds()).isEqualTo(0);
+        assertThat(response.getResourceModel()).isEqualTo(request.getDesiredResourceState());
+        assertThat(response.getResourceModels()).isNull();
+        assertThat(response.getMessage()).isNull();
+        assertThat(response.getErrorCode()).isNull();
+    }
+
+    @Test
+    public void testPreCreate_GetDistributionsReturnsEmpty() {
+        final CallbackContext callbackContext = new CallbackContext();
+        final ResourceModel model = ResourceModel.builder().build();
+
+        final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
+                .desiredResourceState(model)
+                .build();
+
+        val testDistributionHandler = spy(new DistributionHandler(proxy, callbackContext, request.getDesiredResourceState(), logger,
+                proxyClient, request));
+
+        doReturn(distribution)
+                .when(testDistributionHandler).getDistribution(any(), any(), any());
+
+        when(distribution.read(any()))
+                .thenReturn(GetDistributionsResponse.builder().build());
 
         final ProgressEvent<ResourceModel, CallbackContext> response = testDistributionHandler.preCreate(ProgressEvent.progress(model, callbackContext));
 
