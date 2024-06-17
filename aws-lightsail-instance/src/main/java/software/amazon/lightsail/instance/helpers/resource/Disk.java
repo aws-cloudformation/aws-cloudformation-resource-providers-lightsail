@@ -6,9 +6,11 @@ import lombok.val;
 import software.amazon.awssdk.awscore.AwsRequest;
 import software.amazon.awssdk.awscore.AwsResponse;
 import software.amazon.awssdk.services.lightsail.LightsailClient;
+import software.amazon.awssdk.services.lightsail.model.DetachDiskResponse;
 import software.amazon.awssdk.services.lightsail.model.GetDiskRequest;
 import software.amazon.awssdk.services.lightsail.model.GetDiskResponse;
 import software.amazon.awssdk.services.lightsail.model.GetInstanceRequest;
+import software.amazon.awssdk.services.lightsail.model.OperationFailureException;
 import software.amazon.cloudformation.proxy.Logger;
 import software.amazon.cloudformation.proxy.ProxyClient;
 import software.amazon.cloudformation.proxy.ResourceHandlerRequest;
@@ -23,6 +25,7 @@ import static software.amazon.lightsail.instance.Translator.getDisksFromResource
 import static software.amazon.lightsail.instance.Translator.translateFromReadResponse;
 import static software.amazon.lightsail.instance.Translator.translateToAttachDiskRequest;
 import static software.amazon.lightsail.instance.Translator.translateToDetachDiskRequest;
+import static software.amazon.lightsail.instance.helpers.resource.ResourceHelper.sleepToAvoidEventualConsistency;
 
 /**
  * Helper class to handle Disk Interactions with the Instance resource.
@@ -97,6 +100,10 @@ public class Disk implements ResourceHelper {
         Collection<software.amazon.lightsail.instance.Disk> disksNeedAttachment = this.disksNeedAttachment();
         while (disksNeedAttachment.size() > 0) {
             this.attach(disksNeedAttachment);
+            // We will sleep for some time here before making next GetInstance call.
+            // Because there are some time when we call GetInstance as soon as after we attach disk
+            // it's not returning currently attached disk, which is causing us to try and attach same disk again.
+            sleepToAvoidEventualConsistency();
             disksNeedAttachment = this.disksNeedAttachment();
         }
         return awsResponse;
@@ -166,14 +173,15 @@ public class Disk implements ResourceHelper {
      *
      * @return
      */
-    private Collection<software.amazon.lightsail.instance.Disk> getDisksNeedAttachment(
+    Collection<software.amazon.lightsail.instance.Disk> getDisksNeedAttachment(
             Set<software.amazon.lightsail.instance.Disk> currentDisks,
             Set<software.amazon.lightsail.instance.Disk> desiredDisks) {
+        logger.log(String.format("%s current Disks size", currentDisks.size()));
         return desiredDisks.stream().filter(disk -> {
             logger.log(String.format("Checking if Disk: %s needs attachment", disk.getDiskName()));
             return disk.getDiskName() != null && currentDisks.stream().noneMatch(curDisk -> {
-                logger.log(String.format("Current Disk %s %s %s", curDisk.getDiskName(), curDisk.getAttachmentState(),
-                        disk.getDiskName().equals(curDisk.getDiskName())));
+                logger.log(String.format("Current Disk %s %s %s",
+                        curDisk.getDiskName(), curDisk.getAttachmentState(), disk.getDiskName().equals(curDisk.getDiskName())));
                 return curDisk.getDiskName() != null &&
                 // check the disks that are in the attached or attaching state.
                 (!"detached".equalsIgnoreCase(curDisk.getAttachmentState())
@@ -264,12 +272,25 @@ public class Disk implements ResourceHelper {
      *
      * @param disksNeedDetachment
      */
-    private AwsResponse detach(Collection<software.amazon.lightsail.instance.Disk> disksNeedDetachment) {
+    AwsResponse detach(Collection<software.amazon.lightsail.instance.Disk> disksNeedDetachment) {
         val detachRequest = translateToDetachDiskRequest(resourceModel.getInstanceName(),
                 (List<software.amazon.lightsail.instance.Disk>) disksNeedDetachment);
         logger.log(String.format("Detaching Disk: %s for Instance: %s", detachRequest.diskName(),
                 resourceModel.getInstanceName()));
-        val awsResponse = proxyClient.injectCredentialsAndInvokeV2(detachRequest, proxyClient.client()::detachDisk);
+        DetachDiskResponse awsResponse = null;
+        try {
+            awsResponse = proxyClient.injectCredentialsAndInvokeV2(detachRequest, proxyClient.client()::detachDisk);
+        } catch (OperationFailureException ex) {
+            String errorMessage = ex.awsErrorDetails().errorMessage();
+            if (errorMessage.contains("You can't detach this disk right now. The state of this disk is")) {
+                // Avoid exception to handle eventual consistency with disk detach.
+                logger.log(String.format("Exception while detaching disk %s. Continue execution.",
+                        detachRequest.diskName()));
+                logger.log(ex.getMessage());
+            } else {
+                throw ex;
+            }
+        }
         return awsResponse;
     }
 }

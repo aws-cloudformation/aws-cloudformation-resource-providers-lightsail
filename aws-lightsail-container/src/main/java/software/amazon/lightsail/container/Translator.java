@@ -60,9 +60,10 @@ public class Translator {
   private static ResourceModel translateSDKContainerServiceToResourceModel(final ContainerService containerService) {
     return ResourceModel.builder().serviceName(containerService.containerServiceName()).containerArn(containerService.arn())
             .power(containerService.powerAsString()).scale(containerService.scale()).tags(translateSDKtoTag(containerService.tags()))
-            .isDisabled(containerService.isDisabled()).url(containerService.url())
+            .isDisabled(containerService.isDisabled()).url(containerService.url()).principalArn(containerService.principalArn())
             .publicDomainNames(translateSDKPublicDomainNameToResourceModel(containerService.publicDomainNames()))
             .containerServiceDeployment(translateSDKContainerServiceDeploymentToResourceModel(containerService.currentDeployment()))
+            .privateRegistryAccess(translateSDKPrivateRegistryAcecssToResourceModel(containerService.privateRegistryAccess()))
             .build();
   }
 
@@ -82,7 +83,8 @@ public class Translator {
    */
   public static AwsRequest translateToUpdateContainerRequest(final ResourceModel model, final ResourceModel previousModel) {
     return UpdateContainerServiceRequest.builder().serviceName(model.getServiceName()).power(model.getPower()).scale(model.getScale())
-            .publicDomainNames(translatePublicDomainNamesToSDK(model.getPublicDomainNames(), previousModel)).isDisabled(model.getIsDisabled()).build();
+            .publicDomainNames(translatePublicDomainNamesToSDK(model.getPublicDomainNames(), previousModel)).isDisabled(model.getIsDisabled())
+            .privateRegistryAccess(translatePrivateRegistryToSDK(model.getPrivateRegistryAccess())).build();
   }
 
   /**
@@ -107,6 +109,11 @@ public class Translator {
   private static EndpointRequest translatePublicEndpointToSDK(final PublicEndpoint endpoint) {
     return endpoint == null ? null : EndpointRequest.builder().containerName(endpoint.getContainerName()).containerPort(endpoint.getContainerPort())
             .healthCheck(translateHealthCheckConfigToSDK(endpoint.getHealthCheckConfig())).build();
+  }
+
+  private static PrivateRegistryAccessRequest translatePrivateRegistryToSDK(final PrivateRegistryAccess registryAccess) {
+    return registryAccess == null ? PrivateRegistryAccessRequest.builder().ecrImagePullerRole(ContainerServiceECRImagePullerRoleRequest.builder().isActive(false).build()).build() :
+            PrivateRegistryAccessRequest.builder().ecrImagePullerRole(ContainerServiceECRImagePullerRoleRequest.builder().isActive(registryAccess.getEcrImagePullerRole().getIsActive()).build()).build();
   }
 
   private static ContainerServiceHealthCheckConfig translateHealthCheckConfigToSDK(final HealthCheckConfig healthCheckConfig) {
@@ -156,12 +163,18 @@ public class Translator {
     if (domainNames == null) {
       if (previousModel != null && previousModel.getPublicDomainNames() != null) {
         for (PublicDomainName domainName: previousModel.getPublicDomainNames()) {
+          if (domainName.getCertificateName().equalsIgnoreCase("")) {
+            continue;
+          }
           sdkDomains.put(domainName.getCertificateName(), new HashSet<>());
         }
       }
       return sdkDomains;
     }
     for (PublicDomainName domainName: domainNames) {
+      if (domainName.getCertificateName().equalsIgnoreCase("")) {
+        continue;
+      }
       sdkDomains.put(domainName.getCertificateName(), domainName.getDomainNames());
     }
     return sdkDomains;
@@ -184,6 +197,13 @@ public class Translator {
     return healthCheckConfig == null ? null : HealthCheckConfig.builder().healthyThreshold(healthCheckConfig.healthyThreshold()).intervalSeconds(healthCheckConfig.intervalSeconds())
             .path(healthCheckConfig.path()).successCodes(healthCheckConfig.successCodes()).timeoutSeconds(healthCheckConfig.timeoutSeconds())
             .unhealthyThreshold(healthCheckConfig.unhealthyThreshold()).build();
+  }
+
+  private static PrivateRegistryAccess translateSDKPrivateRegistryAcecssToResourceModel
+          (final software.amazon.awssdk.services.lightsail.model.PrivateRegistryAccess registryAccess) {
+    return registryAccess == null ? null : PrivateRegistryAccess.builder().ecrImagePullerRole(EcrImagePullerRole.builder()
+            .isActive(registryAccess.ecrImagePullerRole().isActive())
+            .principalArn(registryAccess.ecrImagePullerRole().principalArn()).build()).build();
   }
 
   private static Set<Container> translateSDKContainersToResourceModel
@@ -226,10 +246,11 @@ public class Translator {
   }
 
   private static Set<PublicDomainName> translateSDKPublicDomainNameToResourceModel(Map<String, List<String>> domainNames) {
-    if (domainNames == null || domainNames.isEmpty()) {
-      return null;
-    }
     Set<PublicDomainName> modelDomains = new HashSet<>();
+    if (domainNames == null || domainNames.isEmpty()) {
+      modelDomains.add(PublicDomainName.builder()
+              .certificateName("").domainNames(new HashSet<>()).build());
+    }
     for (Map.Entry<String, List<String>> entry: domainNames.entrySet()) {
       modelDomains.add(PublicDomainName.builder()
               .certificateName(entry.getKey()).domainNames(entry.getValue().stream().collect(Collectors.toSet())).build());

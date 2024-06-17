@@ -1,0 +1,12 @@
+Resources:
+  CanaryLoadBalancerForCert:
+    Type: AWS::Lightsail::LoadBalancer
+    Properties:
+      LoadBalancerName: CanaryLoadBalancerForCert
+      InstancePort: 80
+
+Outputs:
+  CanaryLoadBalancerForCert:
+    Value: !Ref CanaryLoadBalancerForCert
+    Export:
+      Name: awslightsailloadbalancertlscertificatecto1

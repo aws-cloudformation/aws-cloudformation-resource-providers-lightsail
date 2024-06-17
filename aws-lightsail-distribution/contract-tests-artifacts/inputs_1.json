@@ -1,0 +1,64 @@
+{
+    "CreateInputs": {
+        "DistributionName": "contract-test-distribution-cfn",
+        "BundleId": "small_1_0",
+        "DefaultCacheBehavior": {
+            "Behavior": "cache"
+        },
+        "Origin": {
+            "Name": "{{awslightsaildistributioncto1}}",
+            "ProtocolPolicy": "http-only",
+            "RegionName": "us-east-1"
+        },
+        "IpAddressType": "ipv4",
+        "CacheBehaviors": [
+            {
+                "Behavior": "dont-cache",
+                "Path": "var/www/html/"
+            }
+        ],
+        "Tags": [
+            {
+                "Key": "key",
+                "Value": "value"
+            }
+        ]
+    },
+    "PatchInputs": [
+        {
+            "op": "add",
+            "path": "/IsEnabled",
+            "value": false
+        },
+        {
+            "op": "add",
+            "path": "/CacheBehaviorSettings",
+            "value": {
+                "DefaultTTL": 2000,
+                "MaximumTTL": 3000,
+                "MinimumTTL": 1000,
+                "ForwardedCookies": {
+                    "Option": "allow-list",
+                    "CookiesAllowList": [
+                        "cookie1",
+                        "cookie2"
+                    ]
+                },
+                "ForwardedHeaders": {
+                    "Option": "allow-list",
+                    "HeadersAllowList": [
+                        "Host",
+                        "Origin"
+                    ]
+                },
+                "ForwardedQueryStrings": {
+                    "Option": true,
+                    "QueryStringsAllowList": [
+                        "query1",
+                        "query2"
+                    ]
+                }
+            }
+        }
+    ]
+}

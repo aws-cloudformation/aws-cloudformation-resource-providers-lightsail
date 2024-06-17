@@ -26,7 +26,7 @@ public class CallbackContext extends StdCallbackContext {
 
     private Integer maxWaitCount = 40;
 
-    private Integer postOperationWaitCount = 2;
+    private Integer postOperationWaitCount = 8;
 
     public int getWaitCount(final String key) {
         return this.waitCount.getOrDefault(key, 0);

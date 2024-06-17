@@ -2,11 +2,7 @@ package software.amazon.lightsail.instance;
 
 import software.amazon.awssdk.awscore.exception.AwsServiceException;
 import software.amazon.awssdk.services.lightsail.LightsailClient;
-import software.amazon.cloudformation.exceptions.CfnAccessDeniedException;
-import software.amazon.cloudformation.exceptions.CfnGeneralServiceException;
-import software.amazon.cloudformation.exceptions.CfnInternalFailureException;
-import software.amazon.cloudformation.exceptions.CfnInvalidRequestException;
-import software.amazon.cloudformation.exceptions.CfnThrottlingException;
+import software.amazon.cloudformation.exceptions.*;
 import software.amazon.cloudformation.proxy.AmazonWebServicesClientProxy;
 import software.amazon.cloudformation.proxy.HandlerErrorCode;
 import software.amazon.cloudformation.proxy.Logger;
@@ -89,7 +85,7 @@ public abstract class BaseHandlerStd extends BaseHandler<CallbackContext> {
 
             switch (errorCode) {
             case NotFoundException:
-                return ProgressEvent.defaultFailureHandler(new CfnInvalidRequestException(e),
+                return ProgressEvent.defaultFailureHandler(new CfnNotFoundException(e),
                         HandlerErrorCode.NotFound);
             case InvalidInputException:
             case InvalidParameterCombination:
@@ -111,8 +107,8 @@ public abstract class BaseHandlerStd extends BaseHandler<CallbackContext> {
             case InternalFailure:
             case ServiceUnavailable:
             default:
-                return ProgressEvent.defaultFailureHandler(new CfnInternalFailureException(e),
-                        HandlerErrorCode.InternalFailure);
+                return ProgressEvent.defaultFailureHandler(new CfnGeneralServiceException(e),
+                        HandlerErrorCode.GeneralServiceException);
             }
         }
         return ProgressEvent.defaultFailureHandler(new CfnGeneralServiceException(e),

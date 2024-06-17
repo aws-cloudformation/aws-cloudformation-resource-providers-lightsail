@@ -2,8 +2,10 @@ package software.amazon.lightsail.disk;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 
+import lombok.val;
 import software.amazon.awssdk.services.lightsail.LightsailClient;
 import software.amazon.awssdk.services.lightsail.model.GetDiskRequest;
 import software.amazon.awssdk.services.lightsail.model.GetDiskResponse;
@@ -68,10 +70,16 @@ public class ReadHandlerTest extends AbstractTestBase {
 
         final ProgressEvent<ResourceModel, CallbackContext> response = handler.handleRequest(proxy, request, new CallbackContext(), proxyClient, logger);
 
+        val desiredResponse = request.getDesiredResourceState();
+        desiredResponse.setAddOns(Arrays.asList(AddOn.builder().addOnType("AutoSnapshot")
+                .status("Disabled").build()));
+        desiredResponse.setPath("");
+        desiredResponse.setAttachedTo("");
+
         assertThat(response).isNotNull();
         assertThat(response.getStatus()).isEqualTo(OperationStatus.SUCCESS);
         assertThat(response.getCallbackDelaySeconds()).isEqualTo(0);
-        assertThat(response.getResourceModel()).isEqualTo(request.getDesiredResourceState());
+        assertThat(response.getResourceModel()).isEqualTo(desiredResponse);
         assertThat(response.getResourceModels()).isNull();
         assertThat(response.getMessage()).isNull();
         assertThat(response.getErrorCode()).isNull();

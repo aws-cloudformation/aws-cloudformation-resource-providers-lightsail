@@ -472,8 +472,9 @@ public class ContainerHandlerTest {
                 .thenReturn(DeleteContainerServiceResponse.builder().build());
         when(container.isStabilizedDelete())
                 .thenReturn(true);
-        callbackContext.incrementWaitCount(POST_CHECK_DELETE);
-        callbackContext.incrementWaitCount(POST_CHECK_DELETE);
+        for (int i = 0; i < 8; i++) {
+            callbackContext.incrementWaitCount(POST_CHECK_DELETE);
+        }
 
         final ProgressEvent<ResourceModel, CallbackContext> response = testContainerHandler.delete(ProgressEvent.progress(model, callbackContext));
 

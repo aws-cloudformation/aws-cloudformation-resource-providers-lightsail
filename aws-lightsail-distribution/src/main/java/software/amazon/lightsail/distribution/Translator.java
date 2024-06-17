@@ -70,7 +70,8 @@ public class Translator {
             .defaultCacheBehavior(software.amazon.lightsail.distribution.CacheBehavior.builder()
                     .behavior(distribution.defaultCacheBehavior().behaviorAsString()).build())
             .cacheBehaviorSettings(translateSdkToCacheBehaviorSettings(distribution.cacheBehaviorSettings()))
-            .origin(translateSdkToInputOriginObject(distribution.origin())).certificateName(distribution.certificateName())
+            .origin(translateSdkToInputOriginObject(distribution.origin()))
+            .certificateName(distribution.certificateName() == null ? "" : distribution.certificateName())
             .build();
   }
 

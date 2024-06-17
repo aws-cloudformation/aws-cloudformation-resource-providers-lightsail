@@ -31,6 +31,10 @@ public class CreateHandler extends BaseHandlerStd {
         return new UpdateHandler();
     }
 
+    protected boolean isHighAvailabilityBundle(String bundleId) {
+        return bundleId.contains("_ha_");
+    }
+
     protected ProgressEvent<ResourceModel, CallbackContext> handleRequest(
         final AmazonWebServicesClientProxy proxy,
         final ResourceHandlerRequest<ResourceModel> request,
@@ -44,8 +48,10 @@ public class CreateHandler extends BaseHandlerStd {
 
         return ProgressEvent.progress(request.getDesiredResourceState(), callbackContext).then(progress -> {
             // NOTE: Availability Zone is not required on the model as we allow for this to be auto-picked
+            // Only set Availability Zone when not specified for non HA database bundles.
             ResourceModel resourceModel = progress.getResourceModel();
-            if (StringUtils.isEmpty(resourceModel.getAvailabilityZone())) {
+            if (StringUtils.isEmpty(resourceModel.getAvailabilityZone()) &&
+                    !isHighAvailabilityBundle(resourceModel.getRelationalDatabaseBundleId())) {
                 logger.log("Picking the Availability Zone..");
                 resourceModel.setAvailabilityZone(database.getFirstAvailabilityZone());
             }

@@ -1,0 +1,46 @@
+{
+  "CreateInputs": {
+    "InstanceName": "CanaryTestingInstanceCFN",
+    "BlueprintId": "wordpress_5_1_1_2",
+    "BundleId": "{{awslightsailinstancecto1}}",
+    "UserData": "apt-get -y update",
+    "Hardware": {
+      "Disks": [
+        {
+          "DiskName": "{{awslightsailinstancecto2}}",
+          "Path": "/dev/xvdf",
+          "SizeInGb": "8"
+        }
+      ]
+    },
+    "AddOns": [
+      {
+        "AddOnType": "AutoSnapshot",
+        "Status": "Enabled"
+      }
+    ],
+    "Tags": [
+      {
+        "Key": "key",
+        "Value": "value"
+      }
+    ]
+  },
+  "PatchInputs": [
+    {
+      "op": "replace",
+      "path": "/AddOns/0/Status",
+      "value": "Disabled"
+    },
+    {
+      "op": "replace",
+      "path": "/Tags/0/Key",
+      "value": "key1"
+    },
+    {
+      "op": "replace",
+      "path": "/Tags/0/Value",
+      "value": "value1"
+    }
+  ]
+}

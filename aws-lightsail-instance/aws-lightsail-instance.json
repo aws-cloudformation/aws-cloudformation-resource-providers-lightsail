@@ -235,6 +235,7 @@
         },
         "MonthlyTransfer": {
             "description": "Monthly Transfer of the Instance.",
+            "type": "object",
             "properties": {
                 "GbPerMonthAllocated": {
                     "type": "string",
@@ -245,6 +246,7 @@
         },
         "Networking": {
             "description": "Networking of the Instance.",
+            "type": "object",
             "properties": {
                 "Ports": {
                     "description": "Ports to the Instance.",
@@ -285,6 +287,14 @@
         "PublicIpAddress": {
             "description": "Public IP Address of the Instance",
             "type": "string"
+        },
+        "Ipv6Addresses": {
+            "description": "IPv6 addresses of the instance",
+            "type": "array",
+            "insertionOrder": false,
+            "items": {
+                "type": "string"
+            }
         },
         "Location": {
             "$ref": "#/definitions/Location"
@@ -368,14 +378,13 @@
     ],
     "readOnlyProperties": [
         "/properties/InstanceArn",
-        "/properties/UserData",
-        "/properties/KeyPairName",
         "/properties/SshKeyName",
         "/properties/SupportCode",
         "/properties/ResourceType",
         "/properties/IsStaticIp",
         "/properties/PrivateIpAddress",
         "/properties/PublicIpAddress",
+        "/properties/Ipv6Addresses",
         "/properties/Location/AvailabilityZone",
         "/properties/Location/RegionName",
         "/properties/Hardware/CpuCount",
@@ -385,6 +394,10 @@
         "/properties/UserName",
         "/properties/Networking/MonthlyTransfer/GbPerMonthAllocated"
     ],
+    "writeOnlyProperties": [
+        "/properties/UserData"
+    ],
+    "taggable": true,
     "primaryIdentifier": [
         "/properties/InstanceName"
     ],

@@ -12,12 +12,13 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: software.amazon.lightsail.certificate.HandlerWrapper::handleRequest
-      Runtime: java8
+      Runtime: java17
       CodeUri: ./target/aws-lightsail-certificate-handler-1.0-SNAPSHOT.jar
 
   TestEntrypoint:
     Type: AWS::Serverless::Function
     Properties:
       Handler: software.amazon.lightsail.certificate.HandlerWrapper::testEntrypoint
-      Runtime: java8
+      Runtime: java17
       CodeUri: ./target/aws-lightsail-certificate-handler-1.0-SNAPSHOT.jar
+
