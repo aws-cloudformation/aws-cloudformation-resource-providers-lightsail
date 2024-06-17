@@ -1,17 +1,17 @@
 {
-  "CreateInputs": {
-    "LoadBalancerName": "{{awslightsailloadbalancertlscertificatecto1}}",
-    "CertificateName": "CanaryTestingLoadBalancerTlsCertificateCFN",
-    "CertificateDomainName": "cfn-testing.com",
-    "CertificateAlternativeNames": [
-      "cfn-testing-1.com"
+    "CreateInputs": {
+        "LoadBalancerName": "{{awslightsailloadbalancertlscertificatecto1}}",
+        "CertificateName": "CanaryTestingLoadBalancerTlsCertificateCFN",
+        "CertificateDomainName": "cfn-testing.com",
+        "CertificateAlternativeNames": [
+            "cfn-testing-1.com"
+        ]
+    },
+    "PatchInputs": [
+        {
+            "op": "add",
+            "path": "/HttpsRedirectionEnabled",
+            "value": false
+        }
     ]
-  },
-  "PatchInputs": [
-    {
-      "op": "add",
-      "path": "/HttpsRedirectionEnabled",
-      "value": false
-    }
-  ]
 }

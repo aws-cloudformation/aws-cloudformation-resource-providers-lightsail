@@ -1,48 +1,48 @@
 {
-  "CreateInputs": {
-    "BucketName": "cfn-ct-bucket-{{uuid}}",
-    "BundleId": "small_1_0",
-    "ObjectVersioning": true,
-    "AccessRules": {
-      "GetObject": "private",
-      "AllowPublicOverrides": true
+    "CreateInputs": {
+        "BucketName": "cfn-ct-bucket-{{uuid}}",
+        "BundleId": "small_1_0",
+        "ObjectVersioning": true,
+        "AccessRules": {
+            "GetObject": "private",
+            "AllowPublicOverrides": true
+        },
+        "Tags": [
+            {
+                "Key": "key",
+                "Value": "value"
+            }
+        ]
     },
-    "Tags": [
-      {
-        "Key": "key",
-        "Value": "value"
-      }
+    "PatchInputs": [
+        {
+            "op": "replace",
+            "path": "/BundleId",
+            "value": "large_1_0"
+        },
+        {
+            "op": "replace",
+            "path": "/ObjectVersioning",
+            "value": false
+        },
+        {
+            "op": "replace",
+            "path": "/AccessRules/AllowPublicOverrides",
+            "value": false
+        },
+        {
+            "op": "add",
+            "path": "/ResourcesReceivingAccess",
+            "value": [
+                "{{awslightsailbucketcto2}}"
+            ]
+        },
+        {
+            "op": "add",
+            "path": "/ReadOnlyAccessAccounts",
+            "value": [
+                "175260696065"
+            ]
+        }
     ]
-  },
-  "PatchInputs": [
-    {
-      "op": "replace",
-      "path": "/BundleId",
-      "value": "large_1_0"
-    },
-    {
-      "op": "replace",
-      "path": "/ObjectVersioning",
-      "value": false
-    },
-    {
-      "op": "replace",
-      "path": "/AccessRules/AllowPublicOverrides",
-      "value": false
-    },
-    {
-      "op": "add",
-      "path": "/ResourcesReceivingAccess",
-      "value": [
-        "{{awslightsailbucketcto2}}"
-      ]
-    },
-    {
-      "op": "add",
-      "path": "/ReadOnlyAccessAccounts",
-      "value": [
-        "175260696065"
-      ]
-    }
-  ]
 }

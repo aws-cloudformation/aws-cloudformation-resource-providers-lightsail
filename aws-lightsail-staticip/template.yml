@@ -21,4 +21,3 @@ Resources:
       Handler: software.amazon.lightsail.staticip.HandlerWrapper::testEntrypoint
       Runtime: java17
       CodeUri: ./target/aws-lightsail-staticip-handler-1.0-SNAPSHOT.jar
-

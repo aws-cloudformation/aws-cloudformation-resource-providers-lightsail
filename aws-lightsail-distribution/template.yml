@@ -21,4 +21,3 @@ Resources:
       Handler: software.amazon.lightsail.distribution.HandlerWrapper::testEntrypoint
       Runtime: java17
       CodeUri: ./target/aws-lightsail-distribution-handler-1.0-SNAPSHOT.jar
-

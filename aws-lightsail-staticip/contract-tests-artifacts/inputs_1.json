@@ -1,5 +1,5 @@
 {
-  "CreateInputs": {
-    "StaticIpName": "CanaryTestingStaticIpCFN"
-  }
+    "CreateInputs": {
+        "StaticIpName": "CanaryTestingStaticIpCFN"
+    }
 }

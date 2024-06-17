@@ -21,4 +21,3 @@ Resources:
       Handler: software.amazon.lightsail.bucket.HandlerWrapper::testEntrypoint
       Runtime: java17
       CodeUri: ./target/aws-lightsail-bucket-handler-1.0-SNAPSHOT.jar
-

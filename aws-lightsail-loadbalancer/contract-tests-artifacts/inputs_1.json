@@ -1,39 +1,39 @@
 {
-  "CreateInputs": {
-    "LoadBalancerName": "CanaryTestingLoadBalancerCFN",
-    "InstancePort": 80,
-    "HealthCheckPath": "/",
-    "SessionStickinessEnabled": true,
-    "SessionStickinessLBCookieDurationSeconds": "1000",
-    "Tags": [
-      {
-        "Key": "key",
-        "Value": "value"
-      }
+    "CreateInputs": {
+        "LoadBalancerName": "CanaryTestingLoadBalancerCFN",
+        "InstancePort": 80,
+        "HealthCheckPath": "/",
+        "SessionStickinessEnabled": true,
+        "SessionStickinessLBCookieDurationSeconds": "1000",
+        "Tags": [
+            {
+                "Key": "key",
+                "Value": "value"
+            }
+        ]
+    },
+    "PatchInputs": [
+        {
+            "op": "replace",
+            "path": "/HealthCheckPath",
+            "value": "/new"
+        },
+        {
+            "op": "replace",
+            "path": "/SessionStickinessEnabled",
+            "value": false
+        },
+        {
+            "op": "replace",
+            "path": "/SessionStickinessLBCookieDurationSeconds",
+            "value": "1000"
+        },
+        {
+            "op": "add",
+            "path": "/AttachedInstances",
+            "value": [
+                "{{awslightsailloadbalancercto1}}"
+            ]
+        }
     ]
-  },
-  "PatchInputs": [
-    {
-      "op": "replace",
-      "path": "/HealthCheckPath",
-      "value": "/new"
-    },
-    {
-      "op": "replace",
-      "path": "/SessionStickinessEnabled",
-      "value": false
-    },
-    {
-      "op": "replace",
-      "path": "/SessionStickinessLBCookieDurationSeconds",
-      "value": "1000"
-    },
-    {
-      "op": "add",
-      "path": "/AttachedInstances",
-      "value": [
-        "{{awslightsailloadbalancercto1}}"
-      ]
-    }
-  ]
 }

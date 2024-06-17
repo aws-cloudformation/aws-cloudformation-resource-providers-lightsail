@@ -21,4 +21,3 @@ Resources:
       Handler: software.amazon.lightsail.container.HandlerWrapper::testEntrypoint
       Runtime: java17
       CodeUri: ./target/aws-lightsail-container-handler-1.0-SNAPSHOT.jar
-

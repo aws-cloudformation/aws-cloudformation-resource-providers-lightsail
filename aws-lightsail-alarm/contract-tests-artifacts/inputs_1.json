@@ -1,27 +1,27 @@
 {
-  "CreateInputs": {
-    "AlarmName": "CanaryTestingAlarmCFN",
-    "MonitoredResourceName": "{{awslightsailalarmcto1}}",
-    "MetricName": "CPUUtilization",
-    "ComparisonOperator": "GreaterThanOrEqualToThreshold",
-    "EvaluationPeriods": 4,
-    "Threshold": 10
-  },
-  "PatchInputs": [
-    {
-      "op": "replace",
-      "path": "/EvaluationPeriods",
-      "value": 3
+    "CreateInputs": {
+        "AlarmName": "CanaryTestingAlarmCFN",
+        "MonitoredResourceName": "{{awslightsailalarmcto1}}",
+        "MetricName": "CPUUtilization",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "EvaluationPeriods": 4,
+        "Threshold": 10
     },
-    {
-      "op": "replace",
-      "path": "/Threshold",
-      "value": 15
-    },
-    {
-      "op": "add",
-      "path": "/DatapointsToAlarm",
-      "value": 2
-    }
-  ]
+    "PatchInputs": [
+        {
+            "op": "replace",
+            "path": "/EvaluationPeriods",
+            "value": 3
+        },
+        {
+            "op": "replace",
+            "path": "/Threshold",
+            "value": 15
+        },
+        {
+            "op": "add",
+            "path": "/DatapointsToAlarm",
+            "value": 2
+        }
+    ]
 }

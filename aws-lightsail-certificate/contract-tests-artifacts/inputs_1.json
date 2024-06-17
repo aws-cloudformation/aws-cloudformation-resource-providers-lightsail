@@ -1,24 +1,24 @@
 {
-  "CreateInputs": {
-    "CertificateName": "CanaryTestingCertificateCFN",
-    "DomainName": "cfn-lb-testing.com",
-    "Tags": [
-      {
-        "Key": "key",
-        "Value": "value"
-      }
-    ]
-  },
-  "PatchInputs": [
-    {
-      "op": "replace",
-      "path": "/Tags/0/Key",
-      "value": "key1"
+    "CreateInputs": {
+        "CertificateName": "CanaryTestingCertificateCFN",
+        "DomainName": "cfn-lb-testing.com",
+        "Tags": [
+            {
+                "Key": "key",
+                "Value": "value"
+            }
+        ]
     },
-    {
-      "op": "replace",
-      "path": "/Tags/0/Value",
-      "value": "value1"
-    }
-  ]
+    "PatchInputs": [
+        {
+            "op": "replace",
+            "path": "/Tags/0/Key",
+            "value": "key1"
+        },
+        {
+            "op": "replace",
+            "path": "/Tags/0/Value",
+            "value": "value1"
+        }
+    ]
 }
