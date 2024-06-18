@@ -172,10 +172,12 @@
         "/properties/AttachmentState",
         "/properties/State",
         "/properties/ResourceType",
-        "/properties/Location",
+        "/properties/Location/AvailabilityZone",
+        "/properties/Location/RegionName",
         "/properties/SupportCode",
         "/properties/DiskArn"
     ],
+    "taggable": true,
     "primaryIdentifier": [
         "/properties/DiskName"
     ],
@@ -190,6 +192,8 @@
                 "lightsail:CreateDisk",
                 "lightsail:EnableAddOn",
                 "lightsail:DisableAddOn",
+                "lightsail:GetDisk",
+                "lightsail:GetDisks",
                 "lightsail:GetRegions",
                 "lightsail:TagResource",
                 "lightsail:UntagResource"

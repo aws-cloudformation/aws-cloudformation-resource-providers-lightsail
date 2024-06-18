@@ -49,7 +49,8 @@ public class Distribution implements ResourceHelper {
         AwsResponse awsResponse = DetachCertificateFromDistributionResponse.builder().build();
         val distribution = ((GetDistributionsResponse) this.read(GetDistributionsRequest.builder()
                 .distributionName(resourceModel.getDistributionName()).build())).distributions().get(0);
-        if (distribution.certificateName() == null || (distribution.certificateName() != null &&
+        if (distribution.certificateName() == null || distribution.certificateName().equalsIgnoreCase("")
+                || (distribution.certificateName() != null &&
                 distribution.certificateName().equals(resourceModel.getCertificateName()))) {
             logger.log(String.format("No detach certificate needed for Distribution: %s", resourceModel.getDistributionName()));
             return awsResponse;
@@ -66,7 +67,8 @@ public class Distribution implements ResourceHelper {
         AwsResponse awsResponse = AttachCertificateToDistributionResponse.builder().build();
         val distribution = ((GetDistributionsResponse) this.read(GetDistributionsRequest.builder()
                 .distributionName(resourceModel.getDistributionName()).build())).distributions().get(0);
-        if (resourceModel.getCertificateName() == null || (resourceModel.getCertificateName()!= null &&
+        if (resourceModel.getCertificateName() == null || resourceModel.getCertificateName().equalsIgnoreCase("")
+                || (resourceModel.getCertificateName()!= null &&
                 resourceModel.getCertificateName().equals(distribution.certificateName()))) {
             logger.log(String.format("No attach certificate needed for Distribution: %s", resourceModel.getDistributionName()));
             return awsResponse;

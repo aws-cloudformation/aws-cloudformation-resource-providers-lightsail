@@ -96,6 +96,7 @@ public class DiskHandler extends ResourceHandler {
     private ProgressEvent<ResourceModel, CallbackContext> preAttachDisk(
             final ProgressEvent<ResourceModel, CallbackContext> progress) {
         val disk = new Disk(resourceModel, logger, proxyClient, resourceModelRequest);
+        val instance = new Instance(resourceModel, logger, proxyClient, resourceModelRequest);
         logger.log("Executing AWS-Lightsail-Instance::Update::PreDiskAttach...");
         return proxy
                 .initiate("AWS-Lightsail-Instance::Update::PreDiskAttach", proxyClient, progress.getResourceModel(),
@@ -113,7 +114,8 @@ public class DiskHandler extends ResourceHandler {
                         val diskFree = disk.isDiskDetached(checkDisk.getDiskName());
                         logger.log(String.format("%s disk current state(InUse=) is %s", checkDisk.getDiskName(),
                                 diskFree));
-                        if (!diskFree) {
+                        val instanceFree = instance.isStabilizedUpdate();
+                        if (!(diskFree && instanceFree)) {
                             // wait for max wait time and then return true.
                             return this.isStabilized(this.callbackContext, PRE_CHECK_UPDATE_ATTACH);
                         }

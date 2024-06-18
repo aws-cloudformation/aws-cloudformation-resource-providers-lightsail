@@ -1,8 +1,0 @@
-{
-    "AlarmName": "CanaryTestingAlarmCFN",
-    "MonitoredResourceName": "CanaryInstanceForAlarm",
-    "MetricName": "CPUUtilization",
-    "ComparisonOperator": "GreaterThanOrEqualToThreshold",
-    "EvaluationPeriods": 3,
-    "Threshold": 15
-}

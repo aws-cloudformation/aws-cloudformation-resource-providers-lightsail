@@ -2,10 +2,12 @@ package software.amazon.lightsail.disk;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 
 import com.amazonaws.regions.Regions;
 import com.google.common.collect.ImmutableList;
+import lombok.val;
 import software.amazon.awssdk.awscore.exception.AwsErrorDetails;
 import software.amazon.awssdk.services.lightsail.LightsailClient;
 import software.amazon.awssdk.services.lightsail.model.*;
@@ -107,10 +109,16 @@ public class CreateHandlerTest extends AbstractTestBase {
 
         model.setAvailabilityZone("us-west-2a");
 
+        val desiredResponse = request1.getDesiredResourceState();
+        desiredResponse.setAddOns(Arrays.asList(AddOn.builder().addOnType("AutoSnapshot")
+                .status("Disabled").build()));
+        desiredResponse.setPath("");
+        desiredResponse.setAttachedTo("");
+
         assertThat(response).isNotNull();
         assertThat(response.getStatus()).isEqualTo(OperationStatus.SUCCESS);
         assertThat(response.getCallbackDelaySeconds()).isEqualTo(0);
-        assertThat(response.getResourceModel()).isEqualTo(request1.getDesiredResourceState());
+        assertThat(response.getResourceModel()).isEqualTo(desiredResponse);
         assertThat(response.getResourceModels()).isNull();
         assertThat(response.getMessage()).isNull();
         assertThat(response.getErrorCode()).isNull();
@@ -155,7 +163,7 @@ public class CreateHandlerTest extends AbstractTestBase {
         assertThat(response.getStatus()).isEqualTo(OperationStatus.FAILED);
         assertThat(response.getCallbackDelaySeconds()).isEqualTo(0);
         assertThat(response.getResourceModels()).isNull();
-        assertThat(response.getErrorCode()).isEqualTo(HandlerErrorCode.InternalFailure);
+        assertThat(response.getErrorCode()).isEqualTo(HandlerErrorCode.GeneralServiceException);
     }
 
     @Test

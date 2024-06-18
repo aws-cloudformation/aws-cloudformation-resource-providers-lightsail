@@ -1,0 +1,67 @@
+{
+    "CreateInputs": {
+        "ServiceName": "contract-test-container-cfn",
+        "Power": "nano",
+        "Scale": 1,
+        "PrivateRegistryAccess": {
+            "EcrImagePullerRole": {
+                "IsActive": true
+            }
+        },
+        "Tags": [
+            {
+                "Key": "key",
+                "Value": "value"
+            }
+        ]
+    },
+    "PatchInputs": [
+        {
+            "op": "replace",
+            "path": "/Scale",
+            "value": 2
+        },
+        {
+            "op": "replace",
+            "path": "/Power",
+            "value": "small"
+        },
+        {
+            "op": "add",
+            "path": "/ContainerServiceDeployment",
+            "value": {
+                "Containers": [
+                    {
+                        "ContainerName": "nginx",
+                        "Environment": [
+                            {
+                                "Variable": "variable",
+                                "Value": "value"
+                            }
+                        ],
+                        "Command": [],
+                        "Image": "nginx:latest",
+                        "Ports": [
+                            {
+                                "Port": "80",
+                                "Protocol": "HTTP"
+                            }
+                        ]
+                    }
+                ],
+                "PublicEndpoint": {
+                    "ContainerName": "nginx",
+                    "ContainerPort": 80,
+                    "HealthCheckConfig": {
+                        "HealthyThreshold": 2,
+                        "IntervalSeconds": 5,
+                        "Path": "/test",
+                        "SuccessCodes": "200-499",
+                        "TimeoutSeconds": 2,
+                        "UnhealthyThreshold": 2
+                    }
+                }
+            }
+        }
+    ]
+}

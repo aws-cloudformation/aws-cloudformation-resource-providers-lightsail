@@ -33,7 +33,7 @@ import static software.amazon.lightsail.disk.AbstractTestBase.MOCK_CREDENTIALS;
 
 class TagsTest {
 
-    private Tags tagsTest;
+    private software.amazon.lightsail.disk.helpers.resource.Tags tagsTest;
 
     @Mock
     private AmazonWebServicesClientProxy proxy;
@@ -62,7 +62,7 @@ class TagsTest {
                 ResourceHandlerRequest.<ResourceModel>builder()
                         .desiredResourceState(model)
                         .build();
-        tagsTest = new Tags(model, logger,
+        tagsTest = new software.amazon.lightsail.disk.helpers.resource.Tags(model, logger,
                 proxyClient, resourceModelRequest);
     }
 

@@ -1,0 +1,35 @@
+Conditions:
+  RegionBom:
+    Fn::Equals: [{Ref: "AWS::Region" }, "ap-south-1"]
+  RegionArn:
+    Fn::Equals: [{Ref: "AWS::Region" }, "eu-north-1"]
+  RegionSyd:
+    Fn::Equals: [ { Ref: "AWS::Region" }, "ap-southeast-2" ]
+  SpecialBundleRegion:
+    Fn::Or: [
+      {"Condition":"RegionBom"},
+      {"Condition":"RegionArn"},
+      {"Condition":"RegionSyd"}
+    ]
+
+Resources:
+  CanaryDiskInstance:
+    Type: AWS::Lightsail::Disk
+    Properties:
+      "DiskName": "CanaryDiskInstance"
+      "SizeInGb": 8
+
+Outputs:
+  TestRegionBundle:
+    Value:
+      Fn::If: [ "SpecialBundleRegion",
+          Fn::If: [ "RegionBom", "small_2_1",
+              Fn::If: [ "RegionSyd", "small_2_2",
+                        Fn::If: [ "RegionArn", "small_2_3", "small_2_0" ] ] ],
+          "small_2_0" ]
+    Export:
+      Name: awslightsailinstancecto1
+  CanaryDiskInstance:
+    Value: !Ref CanaryDiskInstance
+    Export:
+      Name: awslightsailinstancecto2

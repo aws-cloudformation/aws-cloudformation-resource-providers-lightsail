@@ -5,11 +5,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import software.amazon.awssdk.awscore.AwsRequest;
 import software.amazon.awssdk.awscore.AwsResponse;
+import software.amazon.awssdk.awscore.exception.AwsErrorDetails;
 import software.amazon.awssdk.awscore.exception.AwsServiceException;
 import software.amazon.awssdk.services.lightsail.LightsailClient;
 import software.amazon.awssdk.services.lightsail.model.AddOnType;
 import software.amazon.awssdk.services.lightsail.model.GetInstanceRequest;
 import software.amazon.awssdk.services.lightsail.model.GetInstanceResponse;
+import software.amazon.awssdk.services.lightsail.model.InvalidInputException;
 import software.amazon.cloudformation.proxy.Logger;
 import software.amazon.cloudformation.proxy.ProxyClient;
 import software.amazon.cloudformation.proxy.ResourceHandlerRequest;
@@ -43,8 +45,16 @@ public class AddOns implements ResourceHelper {
             logger.log(String.format("Trying to enable AddOn for Instance: %s", resourceModel.getInstanceName()));
             awsResponse = this.create(request);
         } else {
-            logger.log(String.format("Trying to disable AddOn for Instance: %s", resourceModel.getInstanceName()));
-            awsResponse = this.delete(request);
+            if (isDisableRequired()) {
+                logger.log(String.format("Trying to disable AddOn for Instance: %s", resourceModel.getInstanceName()));
+                awsResponse = this.delete(request);
+            } else {
+                // We handle no disable through exception handling route like before as isStabilizedUpdate()
+                // does not work for the case when disable is not actually done.
+                throw InvalidInputException.builder()
+                        .awsErrorDetails(AwsErrorDetails.builder()
+                                .errorMessage("The addOn is already in requested state").build()).build();
+            }
         }
         logger.log(String.format("AddOn has successfully been updated for Instance: %s", resourceModel.getInstanceName()));
         return awsResponse;
@@ -159,6 +169,24 @@ public class AddOns implements ResourceHelper {
             }
         }
         return false;
+    }
+
+    /**
+     * Check if disable AddOn call needs to be made. Only try to disable addOn when it exists for the instance.
+     * This is to avoid failures when trying to disable addOns that don't exist for windows instances as they don't
+     * support AutoSnapshot AddOn operations.
+     *
+     * @return boolean
+     */
+    public boolean isDisableRequired() {
+        val awsResponse = (GetInstanceResponse) this
+                .read(GetInstanceRequest.builder().instanceName(resourceModel.getInstanceName()).build());
+        val addOns = awsResponse.instance().addOns();
+        if (addOns == null || addOns.isEmpty()) {
+            logger.log(String.format("No need to disable addOn for Instance: %s", resourceModel.getInstanceName()));
+            return false;
+        }
+        return true;
     }
 
     /**

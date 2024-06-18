@@ -1,0 +1,27 @@
+Conditions:
+  IsIAD:
+    Fn::Equals: [ Ref: AWS::Region, 'us-east-1' ]
+
+Resources:
+  CtInstanceForDistribution:
+    Type: AWS::Lightsail::Instance
+    Condition: IsIAD
+    Properties:
+      InstanceName: CtInstanceForDistribution
+      BlueprintId: wordpress_5_1_1_2
+      BundleId: small_3_0
+
+  CtStaticIpDistribution:
+    DependsOn: CtInstanceForDistribution
+    Condition: IsIAD
+    Type: "AWS::Lightsail::StaticIp"
+    Properties:
+      StaticIpName: "CtStaticIpDistribution"
+      AttachedTo:
+        Ref: CtInstanceForDistribution
+
+Outputs:
+  CtInstanceForDistribution:
+    Value: !Ref CtInstanceForDistribution
+    Export:
+      Name: awslightsaildistributioncto1

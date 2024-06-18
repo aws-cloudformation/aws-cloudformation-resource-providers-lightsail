@@ -1,5 +1,0 @@
-{
-    "LoadBalancerName": "CanaryLoadBalancerForLbCert",
-    "CertificateName": "CanaryTestingLoadBalancerTlsCertificateCFN",
-    "CertificateDomainName": "cfn-lb-testing.com"
-}

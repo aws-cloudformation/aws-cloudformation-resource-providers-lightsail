@@ -92,7 +92,7 @@ public class Translator {
                 .bundleId(instance.bundleId()).instanceArn(instance.arn()).instanceName(instance.name())
                 .isStaticIp(instance.isStaticIp()).keyPairName(instance.sshKeyName())
                 .location(translateSDKtoLocation(instance.location())).privateIpAddress(instance.privateIpAddress())
-                .publicIpAddress(instance.publicIpAddress())
+                .publicIpAddress(instance.publicIpAddress()).ipv6Addresses(instance.ipv6Addresses())
                 .resourceType(instance.resourceType() == null ? null : instance.resourceType().toString())
                 .state(translateSDKtoState(instance.state())).sshKeyName(instance.sshKeyName())
                 .supportCode(instance.supportCode()).tags(translateSDKtoTag(instance.tags()))
@@ -251,9 +251,9 @@ public class Translator {
     }
 
     /**
-     * PutInstancePublicPorts API will always set accessType to public. in the other term, If customer asked to
-     * close some ports instead if calling close instance public port then we will call with
-     * PutInstancePublicPorts leaving out closing accessType private ones should be enough
+     * PutInstancePublicPorts API will always set accessType to public right ? in the other term, If customer asked to
+     * close some ports instead if calling close instance public port I call with PutInstancePublicPorts leaving out
+     * closing accessType private ones should be enough
      *
      * @param resourceModel
      *

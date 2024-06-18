@@ -50,7 +50,8 @@ public class Translator {
   }
 
   private static ResourceModel translateSDKStaticIpToResourceModel(final StaticIp staticIp) {
-    return ResourceModel.builder().staticIpName(staticIp.name()).attachedTo(staticIp.attachedTo())
+    return ResourceModel.builder().staticIpName(staticIp.name())
+            .attachedTo(staticIp.attachedTo() == null ? "" : staticIp.attachedTo())
             .isAttached(staticIp.isAttached()).ipAddress(staticIp.ipAddress()).staticIpArn(staticIp.arn()).build();
   }
 

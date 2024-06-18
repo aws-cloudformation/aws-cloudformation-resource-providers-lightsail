@@ -67,9 +67,11 @@ public class CreateHandlerTest extends AbstractTestBase {
     }
 
     @Test
-    public void handleRequest_modelWithoutAz() {
+    public void handleRequest_modelWithoutAz_nonHA() {
 
-        final ResourceModel model = ResourceModel.builder().build();
+        final ResourceModel model = ResourceModel.builder()
+                .relationalDatabaseBundleId("small_2_0")
+                .build();
 
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
             .desiredResourceState(model)
@@ -84,6 +86,37 @@ public class CreateHandlerTest extends AbstractTestBase {
 
         verify(databaseHandler, times(1)).handleCreate(ProgressEvent.progress(model, callbackContext));
         verify(database, times(1)).getFirstAvailabilityZone();
+        verify(updateHandler, times(1)).handleRequest(proxy, request, callbackContext, proxyClient, logger);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getStatus()).isEqualTo(OperationStatus.SUCCESS);
+        assertThat(response.getCallbackDelaySeconds()).isEqualTo(0);
+        assertThat(response.getResourceModel()).isEqualTo(request.getDesiredResourceState());
+        assertThat(response.getResourceModels()).isNull();
+        assertThat(response.getMessage()).isNull();
+        assertThat(response.getErrorCode()).isNull();
+    }
+
+    @Test
+    public void handleRequest_modelWithoutAz_HA() {
+
+        final ResourceModel model = ResourceModel.builder()
+                .relationalDatabaseBundleId("small_ha_2_0")
+                .build();
+
+        final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
+                .desiredResourceState(model)
+                .build();
+
+        when(databaseHandler.handleCreate(any()))
+                .thenReturn(ProgressEvent.progress(model, callbackContext));
+        when(updateHandler.handleRequest(any(), any(), any(), any(), any()))
+                .thenReturn(ProgressEvent.success(model, callbackContext));
+
+        final ProgressEvent<ResourceModel, CallbackContext> response = createHandler.handleRequest(proxy, request, callbackContext, proxyClient, logger);
+
+        verify(databaseHandler, times(1)).handleCreate(ProgressEvent.progress(model, callbackContext));
+        verify(database, never()).getFirstAvailabilityZone();
         verify(updateHandler, times(1)).handleRequest(proxy, request, callbackContext, proxyClient, logger);
 
         assertThat(response).isNotNull();

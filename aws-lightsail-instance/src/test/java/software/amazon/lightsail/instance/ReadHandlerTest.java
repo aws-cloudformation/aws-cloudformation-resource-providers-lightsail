@@ -2,6 +2,7 @@ package software.amazon.lightsail.instance;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 
 import software.amazon.awssdk.core.SdkClient;
@@ -63,6 +64,7 @@ public class ReadHandlerTest extends AbstractTestBase {
 
         final ResourceModel model = ResourceModel.builder()
                 .addOns(new ArrayList<>())
+                .ipv6Addresses(Collections.emptyList())
                 .tags(new HashSet<>()).build();
 
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()

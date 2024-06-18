@@ -2,6 +2,7 @@ package software.amazon.lightsail.instance;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 
 import com.amazonaws.regions.Regions;
@@ -89,6 +90,7 @@ public class CreateHandlerTest extends AbstractTestBase {
                 .addOns(new ArrayList<>())
                 .state(State.builder().name("Running").build())
                 .location(Location.builder().availabilityZone("us-west-2a").build())
+                .ipv6Addresses(Collections.emptyList())
                 .tags(new HashSet<>()).build();
 
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
@@ -96,16 +98,19 @@ public class CreateHandlerTest extends AbstractTestBase {
                 .region("us-west-2")
                 .build();
 
+        GetInstanceResponse getInstanceResponse = GetInstanceResponse.builder()
+                .instance(Instance.builder()
+                        .location(ResourceLocation.builder().availabilityZone("us-west-2a").build())
+                        .state(InstanceState.builder()
+                                .name("Running").build()).build()).build();
+
         when(sdkClient.getInstance(any(GetInstanceRequest.class)))
                 .thenThrow(NotFoundException.builder()
                         .awsErrorDetails(AwsErrorDetails
                                 .builder().errorCode("NotFoundException")
                                 .build()).build())
-                .thenReturn(GetInstanceResponse.builder()
-                .instance(Instance.builder()
-                        .location(ResourceLocation.builder().availabilityZone("us-west-2a").build())
-                        .state(InstanceState.builder()
-                        .name("Running").build()).build()).build());
+                .thenReturn(getInstanceResponse)
+                .thenReturn(getInstanceResponse);
 
         when(sdkClient.getRegions(any(GetRegionsRequest.class))).thenReturn(
                                 GetRegionsResponse
@@ -128,11 +133,6 @@ public class CreateHandlerTest extends AbstractTestBase {
 
         when(sdkClient.createInstances(any(CreateInstancesRequest.class)))
                 .thenReturn(CreateInstancesResponse.builder().build());
-
-        doThrow(InvalidInputException.builder()
-                .awsErrorDetails(AwsErrorDetails.builder().errorMessage("The addOn is already in requested state")
-                        .build())
-                .build()).when(sdkClient).disableAddOn(any(DisableAddOnRequest.class));
 
         final ProgressEvent<ResourceModel, CallbackContext> response =
                 handler.handleRequest(proxy, request, new CallbackContext(), proxyClient, logger);
@@ -158,6 +158,7 @@ public class CreateHandlerTest extends AbstractTestBase {
                         .name("Running")
                         .build())
                 .availabilityZone("us-west-2a")
+                .ipv6Addresses(Collections.emptyList())
                 .location(Location.builder().availabilityZone("us-west-2a").build())
                 .addOns(ImmutableList.of(AddOn.builder()
                         .addOnType(AddOnType.AUTO_SNAPSHOT.toString())
@@ -275,7 +276,7 @@ public class CreateHandlerTest extends AbstractTestBase {
         assertThat(response.getStatus()).isEqualTo(OperationStatus.FAILED);
         assertThat(response.getCallbackDelaySeconds()).isEqualTo(0);
         assertThat(response.getResourceModels()).isNull();
-        assertThat(response.getErrorCode()).isEqualTo(HandlerErrorCode.InternalFailure);
+        assertThat(response.getErrorCode()).isEqualTo(HandlerErrorCode.GeneralServiceException);
     }
 
     @Test

@@ -27,7 +27,7 @@ public abstract class ResourceHandler {
 
     public boolean isStabilized(final CallbackContext callbackContext, final String step) {
         if (callbackContext.isWaitCountReached(step)) {
-            return true; // When wait count is reached treat as Stabilized.
+            return true; // When wait count is reached treat as Stablized.
         }
         // Increment the wait count for the step.
         callbackContext.incrementWaitCount(step);

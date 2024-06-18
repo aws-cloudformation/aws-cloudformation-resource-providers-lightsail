@@ -19,6 +19,7 @@ import software.amazon.awssdk.services.lightsail.model.ResourceLocation;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -77,10 +78,12 @@ public class Translator {
         return ResourceModel.builder().addOns(translateSDKtoAddOns(disk.addOns()))
                 .availabilityZone(disk.location() == null ? null : disk.location().availabilityZone())
                 .resourceType(disk.resourceType() == null ? null : disk.resourceType().name())
-                .attachedTo(disk.attachedTo()).attachmentState(disk.attachmentState()).diskName(disk.name())
+                .attachedTo(disk.attachedTo() == null ? "" : disk.attachedTo())
+                .attachmentState(disk.attachmentState()).diskName(disk.name())
                 .tags(translateSDKtoTag(disk.tags())).location(translateSDKtoLocation(disk.location()))
                 .sizeInGb(disk.sizeInGb()).state(disk.state() == null ? null : disk.state().name()).iops(disk.iops())
-                .diskArn(disk.arn()).isAttached(disk.isAttached()).supportCode(disk.supportCode()).path(disk.path())
+                .diskArn(disk.arn()).isAttached(disk.isAttached()).supportCode(disk.supportCode())
+                .path(disk.path() == null ? "" : disk.path())
                 .build();
     }
 
@@ -150,7 +153,10 @@ public class Translator {
 
     private static List<AddOn> translateSDKtoAddOns(
             List<software.amazon.awssdk.services.lightsail.model.AddOn> addOns) {
-        return addOns == null ? null
+        List<AddOn> defaultResponse = new ArrayList<>();
+        defaultResponse.add(AddOn.builder().addOnType("AutoSnapshot")
+                .status("Disabled").build());
+        return (addOns == null || addOns.isEmpty()) ? defaultResponse
                 : addOns.stream().map(addOn -> AddOn.builder().addOnType(addOn.name())
                         .autoSnapshotAddOnRequest(
                                 AutoSnapshotAddOn.builder().snapshotTimeOfDay(addOn.snapshotTimeOfDay()).build())

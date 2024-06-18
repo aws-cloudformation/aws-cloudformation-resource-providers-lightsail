@@ -44,6 +44,7 @@ import software.amazon.cloudformation.proxy.ResourceHandlerRequest;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -268,6 +269,7 @@ public class UpdateHandlerTest extends AbstractTestBase {
                 .thenReturn(detachDone)
                 .thenReturn(detachDone)
                 .thenReturn(detachDone)
+                .thenReturn(detachDone)
                 .thenReturn(attachDone);
 
         when(sdkClient.enableAddOn(any(EnableAddOnRequest.class)))
@@ -303,6 +305,7 @@ public class UpdateHandlerTest extends AbstractTestBase {
                 .state(State.builder()
                         .name("Running")
                         .build())
+                .ipv6Addresses(Collections.emptyList())
                 .addOns(ImmutableList.of(AddOn.builder()
                         .addOnType(AddOnType.AUTO_SNAPSHOT.toString())
                         .status("Enabled")
@@ -349,6 +352,7 @@ public class UpdateHandlerTest extends AbstractTestBase {
                 .state(State.builder()
                         .name("Running")
                         .build())
+                .ipv6Addresses(Collections.emptyList())
                 .addOns(ImmutableList.of(AddOn.builder()
                         .addOnType(AddOnType.AUTO_SNAPSHOT.toString())
                         .status("Enabled")
@@ -547,6 +551,7 @@ public class UpdateHandlerTest extends AbstractTestBase {
                 .state(State.builder()
                         .name("Running")
                         .build())
+                .ipv6Addresses(Collections.emptyList())
                 .addOns(ImmutableList.of(AddOn.builder()
                         .addOnType(AddOnType.AUTO_SNAPSHOT.toString())
                         .status("Disabled")

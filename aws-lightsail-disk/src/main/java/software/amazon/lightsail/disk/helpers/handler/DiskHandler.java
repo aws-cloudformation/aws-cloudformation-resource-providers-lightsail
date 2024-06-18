@@ -52,9 +52,9 @@ public class DiskHandler extends ResourceHandler {
         if (callbackContext.getIsPreCheckDone(PRE_CHECK_CREATE)) {
             return progress;
         }
-        logger.log("Executing AWS-Lightsail-Disk::Create::PreExistence...");
+        logger.log("Executing AWS-Lightsail-Disk::Create::PreExistanceCheck...");
         return proxy
-                .initiate("AWS-Lightsail-Disk::Create::PreExistence", proxyClient, progress.getResourceModel(),
+                .initiate("AWS-Lightsail-Disk::Create::PreExistanceCheck", proxyClient, progress.getResourceModel(),
                         progress.getCallbackContext())
                 .translateToServiceRequest(Translator::translateToReadRequest).makeServiceCall((awsRequest, client) -> {
                     disk.read(awsRequest);

@@ -19,6 +19,7 @@ import software.amazon.awssdk.services.lightsail.model.InstanceState;
 import software.amazon.awssdk.services.lightsail.model.NotFoundException;
 import software.amazon.awssdk.services.lightsail.model.StartInstanceRequest;
 import software.amazon.awssdk.services.lightsail.model.StopInstanceRequest;
+import software.amazon.awssdk.services.lightsail.model.DeleteInstanceResponse;
 import software.amazon.cloudformation.proxy.AmazonWebServicesClientProxy;
 import software.amazon.cloudformation.proxy.Logger;
 import software.amazon.cloudformation.proxy.LoggerProxy;
@@ -107,6 +108,8 @@ class InstanceTest {
                 .thenReturn(resourceModel).thenThrow(NotFoundException.builder()
                 .awsErrorDetails(AwsErrorDetails.builder().errorCode("NotFoundException").build())
                 .build());
+        when(sdkClient.deleteInstance(any(DeleteInstanceRequest.class)))
+                .thenReturn(DeleteInstanceResponse.builder().build());
         instanceTest.delete(DeleteInstanceRequest.builder().build());
         verify(sdkClient, times(1)).deleteInstance(any(DeleteInstanceRequest.class));
     }

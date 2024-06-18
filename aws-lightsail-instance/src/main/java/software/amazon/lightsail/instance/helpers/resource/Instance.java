@@ -67,6 +67,7 @@ public class Instance implements ResourceHelper {
         AwsResponse awsResponse = null;
         awsResponse = proxyClient.injectCredentialsAndInvokeV2(((DeleteInstanceRequest) request),
                 proxyClient.client()::deleteInstance);
+        logger.log(String.format("DeleteInstance response: %s", awsResponse.toString()));
         logger.log(String.format("Successfully deleted Instance: %s", resourceModel.getInstanceName()));
         return awsResponse;
     }

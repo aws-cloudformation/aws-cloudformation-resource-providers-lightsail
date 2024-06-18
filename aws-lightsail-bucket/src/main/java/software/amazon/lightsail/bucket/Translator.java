@@ -62,7 +62,7 @@ public class Translator {
             .resourcesReceivingAccess(bucket.resourcesReceivingAccess().stream().map(resource -> resource.name()).collect(Collectors.toSet()))
             .readOnlyAccessAccounts(bucket.readonlyAccessAccounts().stream().collect(Collectors.toSet()))
             .objectVersioning(bucket.objectVersioning().equalsIgnoreCase("Enabled") ? true : false)
-            .build();
+            .bucketArn(bucket.arn()).build();
   }
 
   /**

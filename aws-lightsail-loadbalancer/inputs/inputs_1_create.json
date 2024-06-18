@@ -1,7 +1,0 @@
-{
-    "LoadBalancerName": "CanaryTestingLoadBalancerCFN",
-    "InstancePort": 80,
-    "HealthCheckPath": "/",
-    "SessionStickinessEnabled": true,
-    "SessionStickinessLBCookieDurationSeconds": "1000"
-}
